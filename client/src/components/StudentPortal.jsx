@@ -6,12 +6,18 @@ const StudentPortal = () => {
   const [exam, setExam] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [examFinished, setExamFinished] = useState(false);
 
   const handleStartExam = () => {
     if (!examId) return;
     setLoading(true);
     setError('');
     setExam(null);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers({});
+    setExamFinished(false);
 
     getExamById(examId)
       .then(data => {
@@ -54,11 +60,57 @@ const StudentPortal = () => {
 
           {error && <div className="alert alert-danger">{error}</div>}
 
-          {exam && (
+          {exam && !examFinished && (
             <div className="mt-4 p-3 border rounded">
-              <h4>Exam Started: {exam.title}</h4>
-              <p>Questions found: {exam.questions.length}</p>
-              <button className="btn btn-outline-success">Begin Answering</button>
+              <h4 className="mb-4">Exam: {exam.title}</h4>
+              <div className="card shadow-sm mb-3">
+                <div className="card-body">
+                  <h5 className="card-title">Question {currentQuestionIndex + 1} of {exam.questions.length}</h5>
+                  <p className="card-text lead">{exam.questions[currentQuestionIndex].text}</p>
+                  
+                  <div className="d-flex flex-column gap-2 mt-3">
+                    {exam.questions[currentQuestionIndex].options.map((option, idx) => (
+                      <label key={idx} className="btn btn-outline-secondary text-start">
+                        <input 
+                          type="radio" 
+                          name={`question-${currentQuestionIndex}`} 
+                          className="me-3"
+                          checked={selectedAnswers[currentQuestionIndex] === option}
+                          onChange={() => setSelectedAnswers({...selectedAnswers, [currentQuestionIndex]: option})}
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="d-flex justify-content-between">
+                <button 
+                  className="btn btn-secondary" 
+                  disabled={currentQuestionIndex === 0}
+                  onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                >
+                  Previous
+                </button>
+                {currentQuestionIndex < exam.questions.length - 1 ? (
+                  <button className="btn btn-primary" onClick={() => setCurrentQuestionIndex(prev => prev + 1)}>
+                    Next
+                  </button>
+                ) : (
+                  <button className="btn btn-success" onClick={() => setExamFinished(true)}>
+                    Submit Exam
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {examFinished && (
+            <div className="mt-4 p-5 border rounded bg-light text-center shadow-sm">
+              <h2 className="text-success">Exam Completed!</h2>
+              <p className="lead">Your answers have been submitted successfully.</p>
+              <button className="btn btn-primary mt-3" onClick={() => setExam(null)}>Return to Portal</button>
             </div>
           )}
         </div>
