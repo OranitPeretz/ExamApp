@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import TeacherDashboard from './components/TeacherDashboard';
 import StudentPortal from './components/StudentPortal';
+import Login from './components/Login';
 
 function App() {
-  const [role, setRole] = useState('teacher');
+  const [user, setUser] = useState(null);
 
-  const toggleRole = () => {
-    setRole(prevRole => (prevRole === 'teacher' ? 'student' : 'teacher'));
+  const handleLogout = () => {
+    setUser(null);
   };
 
   return (
@@ -14,18 +15,18 @@ function App() {
       <nav className="navbar navbar-dark bg-dark mb-4">
         <div className="container">
           <span className="navbar-brand mb-0 h1">E-Test System Prototype</span>
-          <button className="btn btn-outline-light" onClick={toggleRole}>
-            Switch to {role === 'teacher' ? 'Student' : 'Teacher'} View
-          </button>
+          {user && (
+            <button className="btn btn-outline-light" onClick={handleLogout}>
+              Logout ({user.name})
+            </button>
+          )}
         </div>
       </nav>
 
       <div className="container">
-        <div className="alert alert-info">
-          Currently viewing as: <strong>{role.charAt(0).toUpperCase() + role.slice(1)}</strong>
-        </div>
-        
-        {role === 'teacher' ? (
+        {!user ? (
+          <Login onLogin={setUser} />
+        ) : user.role === 'teacher' ? (
           <TeacherDashboard />
         ) : (
           <StudentPortal />
