@@ -1,0 +1,117 @@
+===================================================================
+                E-TEST ENTERPRISE SYSTEM PROTOTYPE v2.2
+                     SYSTEM SPECIFICATION & MANUAL
+===================================================================
+
+1. SYSTEM OVERVIEW & CORE ARCHITECTURE
+---------------------------------------
+E-Test Enterprise System is a high-fidelity, client-side managed 
+Learning Management System (LMS) prototype built using React and 
+Bootstrap. The platform leverages modern Object-Oriented Programming (OOP) 
+principles in its service layers to segregate data handling, state mutation, 
+asynchronous operations, and local persistence.
+
+Core Architectural Services (OOP Classes):
+* StorageService: Encapsulates safe window.localStorage operations.
+* LoggerService: Standardizes cross-component system event logging.
+* ConfigService: Controls environment global thresholds (e.g., API delay simulation).
+* NotifyService: Implements the listener pattern for global visual toast popups.
+* MockDatabase: Houses a robust in-memory relational dataset with persistence v6.
+
+
+2. SYSTEM USERS & ACCESSIBLE ROLES
+-----------------------------------
+The platform explicitly enforces strict Role-Based Access Control (RBAC):
+
+* Teacher (Instructor / Institutional Administrator)
+  - Default Credentials: Username: "admin" | Password: "125"
+  - Capabilities: Full analytical overview of system metrics, dynamic course template 
+    deployment state toggles, comprehensive CRUD exam blueprints builder, and detailed 
+    drill-down student question-error audit reviews.
+
+* Student (Academic Assessment Taker)
+  - Default Capabilities: Dynamic user self-registration, credential authentication, 
+    real-time active assessment browser catalog, runtime exam execution terminal, 
+    historical past attempts ledger tracker, and instant post-exam mistake analysis.
+
+
+3. VISUAL USER INTERFACES & PAGES
+----------------------------------
+The frontend client utilizes conditional rendering state routing to swap 
+between distinct high-fidelity modules smoothly:
+
+* [Auth Section] - Sign-In & Registration Views
+  - Login View: Authenticates relational users via the encapsulated AuthService class.
+  - Register View: Commits new profiles into the Mock DB user table ledger dynamically.
+
+* [Layout Section] - Navigation & Feedback Utilities
+  - NavigationMenu: Houses contextual headers, greeting metrics, and session termination buttons.
+  - NotificationToast: Transmits event signals into floating success/danger indicators.
+
+* [Teacher Dashboard Engine]
+  - Analytical Console View: Renders high-level KPI cards computing global averages, 
+    total submissions, and course template counts from live data pools.
+  - Exam Design Studio: An expanded viewport dedicated to building modular 
+    multiple-choice blueprints, assigning individual strict durations, and previewing layouts.
+  - Submission Audit Sheet View: A deep-dive grading review section that maps a single student's 
+    individual choice matrix against the original exam answer key to trace specific errors.
+
+* [Student Portal Engine]
+  - Portal Catalog Desk: Displays an interactive catalog of published "Active" exams alongside 
+    a persistent sidebar tracking personal evaluation history.
+  - Assessment Solver Interface: Employs a strict asynchronous countdown timer clock with 
+    automatic safety submission thresholds, progressive progress indicators, and radio selectors.
+  - Evaluation Summary & Post-Exam Review Studio: Evaluates answers instantly upon submittal and 
+    opens a mistake-review matrix pinpointing valid versus invalid parameters.
+
+
+4. DETAILED OPERATIONAL USE CASES
+----------------------------------
+* UC-01: User Self-Registration and Authentication Flow
+  - Precondition: Guest user accesses terminal.
+  - Flow: Guest enters name, unique username, select role -> AuthService validates uniqueness -> 
+    Database inserts row -> Redirect to Login -> User inputs verified matching credentials -> 
+    App initializes role routing state.
+
+* UC-02: Advanced Multi-Disciplinary Exam Blueprint Construction
+  - Precondition: Authenticated Teacher launches the Design Studio.
+  - Flow: Teacher inputs subject context title and allocated duration (minutes) -> 
+    Inputs a formulation question statement, provides four unique answer options, and maps 
+    the exact string of the correct value -> Clicks "Add Question" -> UI appends data to real-time 
+    layout buffer -> Teacher reviews structural preview -> Clicks "Save and Deploy" -> 
+    ExamService pushes blueprint to repository arrays as a 'Draft'.
+
+* UC-03: Exam Template Lifecycle and Deployment Status Manipulation
+  - Precondition: Authenticated Teacher views Course Templates row list.
+  - Flow: Teacher targets a specific examination module -> Clicks "Publish" or "Archive" -> 
+    ExamService triggers database state mutation -> Exam status updates -> View model reloads.
+
+* UC-04: Asynchronous Timed Assessment Execution with Auto-Submit
+  - Precondition: Authenticated Student selects an active exam from the Catalog Desk.
+  - Flow: Student launches test -> System transforms minutes to seconds and ignites a background 
+    countdown loop via a persistent Hook effect -> Student steps forward/backward through question 
+    matrices -> If timer reaches zero before manual submission, side-effects immediately halt input, 
+    evaluate hits, and trigger mandatory automated data filing.
+
+* UC-05: Post-Exam Review and Relational Grading Error Auditing
+  - Precondition: A test is completed or a teacher drills down into a student row log.
+  - Flow: User opens the specialized review matrix panel -> System maps the stored 'responses' choice 
+    dictionary array against parent question templates -> Renders green background markers for matches 
+    and detailed red background error indicators displaying expected parameters for failed items.
+
+
+5. SAMPLE DATASET STRUCTURES (HIGH-FIDELITY SEED)
+--------------------------------------------------
+The database persistent v6 schema instantiates the system with 6 diverse disciplines 
+pre-loaded, providing a complete 60-question sample space:
+
+* Module [cs-101]: Introduction to Computer Science (10 algorithmic questions)
+* Module [react-200]: Frontend Frameworks & React Architecture (10 architectural questions)
+* Module [math-202]: Advanced Algebra & Calculus Basics (10 calculus questions)
+* Module [geo-301]: World Geography & Planetary Topography (10 topography questions)
+* Module [hist-105]: Modern World History & Global Conflicts (10 modern world history questions)
+* Module [lit-400]: Classical English Literature & Analysis (10 literature questions)
+
+===================================================================
+                   END OF SYSTEM SPECIFICATION
+===================================================================
