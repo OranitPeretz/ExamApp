@@ -4,7 +4,7 @@ export const getAllExams = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([...mockDb.exams]);
-    }, 800);
+    }, 600);
   });
 };
 
@@ -15,7 +15,7 @@ export const getExamById = (id) => {
       if (exam) {
         resolve({ ...exam });
       } else {
-        reject(new Error("Exam not found"));
+        reject(new Error("Exam not found. Please check the ID."));
       }
     }, 500);
   });
@@ -27,6 +27,23 @@ export const createExam = (exam) => {
       const newExam = { ...exam, id: Date.now().toString() };
       mockDb.exams.push(newExam);
       resolve(newExam);
-    }, 1000);
+    }, 800);
+  });
+};
+
+export const getStudentScores = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...mockDb.studentScores]);
+    }, 500);
+  });
+};
+
+export const saveStudentScore = (scoreEntry) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      mockDb.studentScores.push(scoreEntry);
+      resolve(scoreEntry);
+    }, 400);
   });
 };

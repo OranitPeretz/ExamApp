@@ -1,35 +1,34 @@
 import React, { useState } from 'react';
-import TeacherDashboard from './components/TeacherDashboard';
-import StudentPortal from './components/StudentPortal';
-import Login from './components/Login';
+import Login from './components/auth/Login';
+import Navbar from './components/layout/Navbar';
+import TeacherDashboard from './components/teacher/TeacherDashboard';
+import StudentPortal from './components/student/StudentPortal';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // ישמור אובייקט של { name, role }
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
 
   const handleLogout = () => {
     setUser(null);
   };
 
-  return (
-    <div className="App">
-      <nav className="navbar navbar-dark bg-dark mb-4">
-        <div className="container">
-          <span className="navbar-brand mb-0 h1">E-Test System Prototype</span>
-          {user && (
-            <button className="btn btn-outline-light" onClick={handleLogout}>
-              Logout ({user.name})
-            </button>
-          )}
-        </div>
-      </nav>
+  // במידה והמשתמש לא מחובר, נציג אך ורק את מסך ההתחברות
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
 
-      <div className="container">
-        {!user ? (
-          <Login onLogin={setUser} />
-        ) : user.role === 'teacher' ? (
+  return (
+    <div className="min-vh-100 bg-light">
+      <Navbar user={user} onLogout={handleLogout} />
+
+      <div className="container pb-5">
+        {user.role === 'teacher' ? (
           <TeacherDashboard />
         ) : (
-          <StudentPortal />
+          <StudentPortal user={user} />
         )}
       </div>
     </div>
