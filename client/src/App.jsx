@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
-import TeacherDashboard from './components/TeacherDashboard';
-import StudentPortal from './components/StudentPortal';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import NavigationMenu from './components/layout/NavigationMenu';
+import TeacherDashboard from './components/teacher/TeacherDashboard';
+import StudentPortal from './components/student/StudentPortal';
+import NotificationToast from './components/layout/NotificationToast';
 
 function App() {
-  const [role, setRole] = useState('teacher');
+  const [user, setUser] = useState(null);
+  const [view, setView] = useState('login'); // login, register, dashboard
 
-  const toggleRole = () => {
-    setRole(prevRole => (prevRole === 'teacher' ? 'student' : 'teacher'));
+  const handleLogin = (authenticatedUser) => {
+    setUser(authenticatedUser);
+    setView('dashboard');
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setView('login');
   };
 
   return (
-    <div className="App">
-      <nav className="navbar navbar-dark bg-dark mb-4">
-        <div className="container">
-          <span className="navbar-brand mb-0 h1">E-Test System Prototype</span>
-          <button className="btn btn-outline-light" onClick={toggleRole}>
-            Switch to {role === 'teacher' ? 'Student' : 'Teacher'} View
-          </button>
-        </div>
-      </nav>
+    <div className="min-vh-100 bg-light">
+      {user && <NavigationMenu user={user} onLogout={handleLogout} />}
 
-      <div className="container">
-        <div className="alert alert-info">
-          Currently viewing as: <strong>{role.charAt(0).toUpperCase() + role.slice(1)}</strong>
-        </div>
-        
-        {role === 'teacher' ? (
-          <TeacherDashboard />
-        ) : (
-          <StudentPortal />
+      <div className="container py-3">
+        {view === 'login' && !user && (
+          <Login onLogin={handleLogin} onSwitchToRegister={() => setView('register')} />
         )}
+        {view === 'register' && !user && (
+          <Register onSwitchToLogin={() => setView('login')} />
+        )}
+        {user && user.role === 'teacher' && <TeacherDashboard />}
+        {user && user.role === 'student' && <StudentPortal user={user} />}
       </div>
+
+      <NotificationToast />
     </div>
   );
 }
