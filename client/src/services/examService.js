@@ -1,49 +1,64 @@
-import { mockDb } from './mockDb';
+import { db } from './mockDb';
+import { configService } from '../core/classes/ConfigService';
 
-export const getAllExams = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...mockDb.exams]);
-    }, 600);
-  });
-};
+class ExamService {
+  getAllExams() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(db.getTable('exams'));
+      }, configService.get('apiDelay'));
+    });
+  }
 
-export const getExamById = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const exam = mockDb.exams.find(e => e.id === id);
-      if (exam) {
-        resolve({ ...exam });
-      } else {
-        reject(new Error("Exam not found. Please check the ID."));
-      }
-    }, 500);
-  });
-};
+  getExamById(id) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const exam = db.getTable('exams').find(e => e.id === id);
+        if (exam) {
+          resolve({ ...exam });
+        } else {
+          reject(new Error("Exam code not found."));
+        }
+      }, configService.get('apiDelay'));
+    });
+  }
 
-export const createExam = (exam) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newExam = { ...exam, id: Date.now().toString() };
-      mockDb.exams.push(newExam);
-      resolve(newExam);
-    }, 800);
-  });
-};
+  createExam(examData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const newExam = { ...examData, id: 'exam-' + Date.now().toString().slice(-4) };
+        db.insert('exams', newExam);
+        resolve(newExam);
+      }, configService.get('apiDelay'));
+    });
+  }
 
-export const getStudentScores = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...mockDb.studentScores]);
-    }, 500);
-  });
-};
+  changeStatus(examId, status) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const success = db.updateExamStatus(examId, status);
+        if (success) resolve();
+        else reject(new Error("Failed to change exam status."));
+      }, configService.get('apiDelay'));
+    });
+  }
 
-export const saveStudentScore = (scoreEntry) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      mockDb.studentScores.push(scoreEntry);
-      resolve(scoreEntry);
-    }, 400);
-  });
-};
+  getStudentScores() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(db.getTable('studentScores'));
+      }, configService.get('apiDelay'));
+    });
+  }
+
+  saveStudentScore(scoreRecord) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        db.insert('studentScores', scoreRecord);
+        resolve();
+      }, configService.get('apiDelay'));
+    });
+  }
+}
+
+export const examService = new ExamService();
